@@ -1,44 +1,46 @@
 version: "3.8"
 services:
-  backend:
-    image: redis:alpine
-    ports:
-      - "6379"
-    networks:
-      - frontend
-    deploy:
-      replicas: 2
-      update_config:
-        parallelism: 2
-        delay: 10s
-      restart_policy:
-        condition: on-failure
-
   db:
     image: postgres
     volumes:
       - db-data:/var/lib/postgresql/data
     networks:
-      - backend
+      - app
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  backend:
+    build: ./backend
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    networks:
+      - app
+    volumes:
+      - ./backend:/backend
+    depends_on:
+      - db
+    links:
+      - db
+    entrypoint: /backend/entrypoint.sh
 
   frontend:
-    image: dockersamples/examplevotingapp_vote:before
+    build: ./frontend
+    stdin_open: true
+    command: npm run start
     ports:
-      - "5000:80"
+      - 3000:3000
     networks:
-      - frontend
-    depends_on:
-      - redis
-    deploy:
-      replicas: 2
-      update_config:
-        parallelism: 2
-      restart_policy:
-        condition: on-failure
+      - app
+    volumes:
+      - ./frontend/my-app:/frontend
 
 networks:
-  frontend:
-  backend:
+  app:
 
 volumes:
   db-data:
+  frontend:
+  backend:

@@ -2,12 +2,12 @@ FROM python
 
 ENV PYTHONUNBUFFERED 1
 
-RUN mkdir /home/app
-WORKDIR /home/app
+RUN mkdir /backend
+WORKDIR /backend
 
-RUN pip3 install pipenv && \
-    pwd && \
-    pipenv lock --requirements > requirements.txt && \
-    pip3 install -r requirements.txt
+COPY . .
+
+RUN pip3 install -r requirements.txt 
+RUN chmod +x /backend/entrypoint.sh
 
 EXPOSE 8000
