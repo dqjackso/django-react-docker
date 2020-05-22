@@ -2,12 +2,14 @@ FROM python
 
 ENV PYTHONUNBUFFERED 1
 
-RUN mkdir /backend
-WORKDIR /backend
+RUN mkdir /code
+WORKDIR /code
 
-COPY . .
+COPY entrypoint.sh /code
+COPY requirements.txt /code
+COPY manage.py /code
 
 RUN pip3 install -r requirements.txt 
-RUN chmod +x /backend/entrypoint.sh
+RUN chmod +x ./entrypoint.sh
 
 EXPOSE 8000

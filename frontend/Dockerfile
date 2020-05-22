@@ -2,13 +2,10 @@ FROM node
 
 ENV NPM_CONFIG_LOGLEVEL warn
 
-RUN mkdir -p /frontend
+RUN mkdir /code
+WORKDIR /code
 
-WORKDIR /frontend
-
-RUN pwd
-
-COPY ./my-app ./
+COPY /my-app/package.json /code
 
 RUN npm install
 

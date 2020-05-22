@@ -2,8 +2,6 @@ version: "3.8"
 services:
   db:
     image: postgres
-    volumes:
-      - db-data:/var/lib/postgresql/data
     networks:
       - app
     environment:
@@ -19,28 +17,23 @@ services:
     networks:
       - app
     volumes:
-      - ./backend:/backend
+      - ./backend:/code
     depends_on:
       - db
     links:
       - db
-    entrypoint: /backend/entrypoint.sh
+    entrypoint: /code/entrypoint.sh
 
   frontend:
     build: ./frontend
     stdin_open: true
-    command: npm run start
+    command: npm start
     ports:
       - 3000:3000
     networks:
       - app
     volumes:
-      - ./frontend/my-app:/frontend
+      - ./frontend/my-app:/code
 
 networks:
   app:
-
-volumes:
-  db-data:
-  frontend:
-  backend:
