@@ -27,16 +27,5 @@ services:
       - db
     entrypoint: /code/entrypoint.sh
 
-  frontend:
-    build: ./frontend
-    stdin_open: true
-    command: npm start
-    ports:
-      - 3000:3000
-    networks:
-      - app
-    volumes:
-      - ./frontend/my-app:/code
-
 networks:
   app:
